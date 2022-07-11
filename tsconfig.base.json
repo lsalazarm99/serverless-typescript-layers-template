@@ -1,0 +1,21 @@
+{
+  "extends": "@tsconfig/strictest/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "lib": ["ES2021"],
+    "target": "ES2021",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "paths": {
+      "general": ["src/layers/general"],
+      "hello_world_producer": ["src/layers/hello_world_producer"]
+    },
+    "sourceMap": true,
+    "removeComments": true
+  },
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
+}

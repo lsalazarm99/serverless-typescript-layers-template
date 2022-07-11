@@ -1,0 +1,43 @@
+frameworkVersion: "3"
+
+service: serverless-typescript-layers-template
+configValidationMode: error
+
+provider:
+  name: aws
+  profile: general/${sls:stage}
+  stackName: ${self:service}
+  region: us-east-1
+  runtime: nodejs16.x
+  environment:
+    STAGE: ${sls:stage}
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    NODE_OPTIONS: --enable-source-maps --stack-trace-limit=1000
+
+package:
+  individually: true
+
+layers:
+  General:
+    path: dist/layers/general
+    compatibleRuntimes:
+      - nodejs16.x
+  HelloWorldProducer:
+    path: dist/layers/hello_world_producer
+    compatibleRuntimes:
+      - nodejs16.x
+
+functions:
+  sayHello:
+    handler: dist/functions/sayHello/handler.handler
+    layers:
+      - { Ref: GeneralLambdaLayer }
+      - { Ref: HelloWorldProducerLambdaLayer }
+    package:
+      patterns:
+        - "!./**"
+        - "dist/functions/sayHello/**"
+    events:
+      - httpApi:
+          method: get
+          path: /sayHello
